@@ -7,11 +7,6 @@ import re
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-# Example list of sentences
-# sentences = ["The quick brown fox jumps over the lazy dog.",
-#              "The lazy dog lies down on the comfortable sofa.",
-#              "A clever brown fox sneaks into the vineyard."]
-
 sentences = []
 with open("data/tech/2024-01/day_7.json", 'r') as f:
     data = json.load(f)
@@ -26,7 +21,7 @@ for sentence in sentences:
     tokens = nltk.word_tokenize(sentence)
     pos_tags = nltk.pos_tag(tokens)
     
-     # Filter out nouns from the POS-tagged sentences, and also check with regex pattern for a valid word
+    # Filter out nouns from the POS-tagged sentences, and also check with regex pattern for a valid word
     sentence_nouns = [
         word for word, pos in pos_tags
         if pos.startswith('NN') and valid_word_pattern.match(word)

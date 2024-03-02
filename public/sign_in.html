@@ -32,14 +32,14 @@
 
         <form>
             <div class="form-group">
-                <label for="inputEmail">username</label>
-                <input id="inputEmail" class="form-control" placeholder="clam-tickler" required>
+                <label for="inputUser">username</label>
+                <input id="inputUser" class="form-control" placeholder="clam-tickler" required>
             </div>
             <div class="form-group">
                 <label for="inputPassword">Password</label>
                 <input id="inputPassword" class="form-control" placeholder="123" required>
             </div>
-            <button class="btn btn-primary btn-block" type="submit" id="submit-button">Submit</button>
+            <button class="btn btn-primary btn-block" type="button" id="submit-button">Submit</button>
         </form>
     </div>
 
@@ -50,7 +50,34 @@
 
     <script>
         submit_button = document.getElementById("submit-button")
-        submit_button.onclick = async function() {}
+        username_input = document.getElementById("inputUser")
+        password_input = document.getElementById("inputPassword")
+
+        submit_button.addEventListener("click", async function(event) {
+            let username = await username_input.value
+            let password = await password_input.value
+
+            console.log(username, password)
+            const package = {
+                username: username,
+                password: password
+            }
+
+            const response = await fetch('/sign-in', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(package)
+            });
+
+            const data = await response.json(); 
+            if (data["res"] == 'Y') {
+                window.location.href = 'http://localhost:3010/pref-page'
+            }
+        })
+
+
     </script>
 </body>
 
