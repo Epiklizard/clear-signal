@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rank Preferences</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .preferences-container {
+            width: 100%;
+            max-width: 320px; /* Set the maximum width if necessary */
+            margin: 0 auto;
+        }
+
+        #preferences {
+            list-style: none;
+            padding: 0;
+        }
+
+        .preference-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: grab;
+            background-color: #fff;
+            user-select: none; /* Prevent selection for better dragging */
+            margin-bottom: 5px; /* Optional for spacing */
+        }
+
+        .drag-enter {
+            background-color: #e9ecef;
+        }
+
+        .top-preference {
+            background-color: rgb(75, 192, 192);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100">
+    <div class="preferences-container text-center">
+        <h3 class="mb-4">Rank your top 3 preferences</h3>
+        <ul id="preferences" class="mx-auto">
+            <li class="preference-item" draggable="true" id="preference-a">A</li>
+            <li class="preference-item" draggable="true" id="preference-b">B</li>
+            <li class="preference-item" draggable="true" id="preference-c">C</li>
+            <li class="preference-item" draggable="true" id="preference-d">D</li>
+            <li class="preference-item" draggable="true" id="preference-e">E</li>
+        </ul>
+        <button id="submit-btn" class="btn btn-primary">Submit</button>
+    </div>
+
+    <script>
+        function handleDragStart(e) {
+            this.style.opacity = '0.4';
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+            this.classList.add('drag-start');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-enter');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-enter');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (dragSrcEl !== this) {
+                this.parentNode.removeChild(dragSrcEl);
+                const dropHTML = e.dataTransfer.getData('text/html');
+                this.insertAdjacentHTML('beforebegin', dropHTML);
+                const dropElem = this.previousSibling;
+                addDnDHandlers(dropElem);
+            }
+            this.classList.remove('drag-enter');
+            updatePreferenceColors();
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.style.opacity = '1';
+            items.forEach(function (item) {
+                item.classList.remove('drag-enter');
+            });
+            updatePreferenceColors();
+        }
+
+        function addDnDHandlers(elem) {
+            elem.addEventListener('dragstart', handleDragStart, false);
+            elem.addEventListener('dragover', handleDragOver, false);
+            elem.addEventListener('dragenter', handleDragEnter, false);
+            elem.addEventListener('dragleave', handleDragLeave, false);
+            elem.addEventListener('drop', handleDrop, false);
+            elem.addEventListener('dragend', handleDragEnd, false);
+        }
+
+        function updatePreferenceColors() {
+            let items = document.querySelectorAll('#preferences .preference-item');
+            items.forEach(function(item, index) {
+                item.classList.remove('top-preference');
+                if (index < 3) {
+                    item.classList.add('top-preference');
+                }
+            });
+        }
+
+        let items = document.querySelectorAll('#preferences .preference-item');
+        items.forEach(addDnDHandlers);
+
+        document.querySelector("#submit-btn").addEventListener('click', function(e) {
+            let preferenceItems = document.querySelectorAll('#preferences .preference-item');
+            let rankedPreferences = Array.from(preferenceItems).map(item => item.innerText);
+            console.log('Ranked Preferences:', rankedPreferences);
+        });
+    </script>
+</body>
+</html>
