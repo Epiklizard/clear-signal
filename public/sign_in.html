@@ -54,8 +54,8 @@
         password_input = document.getElementById("inputPassword")
 
         submit_button.addEventListener("click", async function(event) {
-            let username = await username_input.value
-            let password = await password_input.value
+            let username = username_input.value
+            let password = password_input.value
 
             console.log(username, password)
             const package = {
@@ -72,13 +72,22 @@
             });
 
             const data = await response.json(); 
-            if (data["res"] == 'Y') {
+            console.log(data['res'])
+            if (data["res"] == 'dashboard') {
+                console.log('dashboard')
+                window.location.href = 'http://localhost:3010/dashboard'
+            } else if (data["res"] == 'W') {
+                console.log('wrong')
+                // alert is not triggering, why?
+                alert("wrong password or username is taken")
+            } else if (data["res"] == 'pref-page') {
                 window.location.href = 'http://localhost:3010/pref-page'
             }
         })
 
 
     </script>
+    
 </body>
 
 </html>
